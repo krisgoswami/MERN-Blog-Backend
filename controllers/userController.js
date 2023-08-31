@@ -7,7 +7,7 @@ exports.registerController = async (req, res) => {
         //validation for invalid credentials
         if (!username || !email || !password) {
             return res.status(400).send({
-                message: 'Invalid credentials',
+                message: 'Fill all fields, please',
                 success: false
             })
         }
@@ -24,19 +24,35 @@ exports.registerController = async (req, res) => {
         await user.save();
         return res.status(201).send({
             message: 'User created',
-            success: true
+            success: true,
+            user
         })
     } catch (error) {
         console.log(error);
         return res.status(500).send({
             message: 'Error registering user',
-            success: false
+            success: false,
+            error
         })
     }
 }
 
 //get all users
-exports.getAllUsers = () => { }
+exports.getAllUsers = async (req, res) => {
+    try {
+        const users = await userModel.find({});
+        return res.status(200).send({
+            userCount: users.length,
+            users
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            message: 'error fetching users',
+            success: false
+        })
+    }
+}
 
 
 //login 
