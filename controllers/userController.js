@@ -1,4 +1,5 @@
 const userModel = require('../models/userModel');
+const bcrypt = require('bcrypt');
 
 //create user / register user
 exports.registerController = async (req, res) => {
@@ -19,8 +20,11 @@ exports.registerController = async (req, res) => {
                 success: false
             })
         }
-        //s ave user
-        const user = new userModel({ username, email, password });
+        //hashing password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        //save user
+        const user = new userModel({ username, email, password: hashedPassword });
         await user.save();
         return res.status(201).send({
             message: 'User created',
@@ -56,4 +60,41 @@ exports.getAllUsers = async (req, res) => {
 
 
 //login 
-exports.loginController = () => { }
+exports.loginController = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        //validation
+        if (!email || !password) {
+            return res.status(401).send({
+                message: 'Please provide email or password'
+            })
+        }
+        // find if user exists
+        const user = await userModel.findOne({ email })
+        if (!user) {
+            return res.status(401).send({
+                message: 'User not found'
+            })
+        }
+        //compare password
+        const matchPassword = await bcrypt.compare(password, user.password);
+        if (!matchPassword) {
+            return res.status(401).send({
+                message: 'Password incorrect'
+            })
+        }
+        return res.status(200).send({
+            message: 'login successful',
+            success: true,
+            user
+        })
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            message: 'Error logging in',
+            success: false,
+            error
+        })
+    }
+}
