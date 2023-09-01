@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const dotenv = require('dotenv');
 const connectDB = require('./config/connectdb');
 const userRoutes = require('./routes/userRoutes');
+const blogRoutes = require('./routes/blogRoutes');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(morgan('dev'));
 
 //routes
 app.use('/api/v1/user', userRoutes);
+app.use('/api/v1/blog', blogRoutes);
 
 //port
 

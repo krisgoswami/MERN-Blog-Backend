@@ -1,18 +1,41 @@
 const blogModel = require('../models/blogModel');
 
-exports.createBlogController = () => {
+exports.createBlogController = async (req, res) => {
     try {
-
+        const { title, description, image } = req.body;
+        //validation
+        if (!title || !description || !image) {
+            return res.status(400).send({
+                message: 'fill all fields'
+            })
+        }
+        const newBlog = new blogModel({ title, description, image });
+        await newBlog.save();
+        return res.status(201).send({
+            message: 'blog created',
+            newBlog
+        })
     } catch (error) {
-
+        console.log(error);
+        res.status(500).send({ message: 'error creating blog' });
     }
 }
 
-exports.getAllBlogs = () => {
+exports.getAllBlogs = async (req, res) => {
     try {
-
+        const blogs = await blogModel.find({});
+        if (!blogs) {
+            return res.status(200).send({ message: 'no blogs found' })
+        }
+        return res.status(200).send({
+            blogscount: blogs.length,
+            blogs
+        });
     } catch (error) {
-
+        console.log(error);
+        res.status(500).send({
+            message: 'error fetching blogs'
+        })
     }
 }
 
