@@ -80,7 +80,7 @@ exports.loginController = async (req, res) => {
         const matchPassword = await bcrypt.compare(password, user.password);
         if (!matchPassword) {
             return res.status(401).send({
-                message: 'Password incorrect'
+                message: 'Email or Password incorrect'
             })
         }
         return res.status(200).send({
