@@ -22,7 +22,7 @@ exports.createBlogController = async (req, res) => {
         const session = await mongoose.startSession();
         session.startTransaction();
         await newBlog.save({ session }); // saving the blog post based on session
-        existingUser.blogs.push(newBlog); // adding the user who created the blog into the blog post
+        existingUser.blogs.push(newBlog); // adding the user, who created the blog, into the blog post
         await existingUser.save({ session }); // saving the user based on session
         await session.commitTransaction(); // saving the session
         await newBlog.save();
@@ -83,7 +83,7 @@ exports.updateBlogController = async (req, res) => {
 exports.deleteBlogController = async (req, res) => {
     try {
         const blog = await blogModel.findOneAndDelete(req.params.id).populate('user'); // get user object to delete the post id from it
-        await blog.user.blogs.pull(blog); // pull the specified blog post and    delete it
+        await blog.user.blogs.pull(blog); // pull the specified blog post and delete it
         await blog.user.save(); // save the user with the updated blog list
         return res.status(200).send({ message: 'post deleted' })
     } catch (error) {
