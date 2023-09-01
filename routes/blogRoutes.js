@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/allBlogs', getAllBlogs);
 
 //GET - get blog by id
-router.get('getBlog/:id', getBlogById);
+router.get('/getBlog/:id', getBlogById);
 
 //POST - create blog
 router.post('/createBlog', createBlogController);
@@ -16,6 +16,6 @@ router.post('/createBlog', createBlogController);
 router.put('/updateBlog/:id', updateBlogController);
 
 //DELETE - delete blog
-router.delete('deleteBlog/:id', deleteBlogController);
+router.delete('/deleteBlog/:id', deleteBlogController);
 
 module.exports = router;

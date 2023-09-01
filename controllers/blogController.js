@@ -39,11 +39,17 @@ exports.getAllBlogs = async (req, res) => {
     }
 }
 
-exports.getBlogById = () => {
+exports.getBlogById = async (req, res) => {
     try {
-
+        const { id } = req.params;
+        const blog = await blogModel.findById(id);
+        if (!blog) {
+            return res.status(404).send({ message: 'post not found' });
+        }
+        return res.status(200).send(blog);
     } catch (error) {
-
+        console.log(error);
+        res.status(500).send({ message: 'error fetching blog post' });
     }
 }
 
@@ -59,10 +65,12 @@ exports.updateBlogController = async (req, res) => {
     }
 }
 
-exports.deleteBlogController = () => {
+exports.deleteBlogController = async (req, res) => {
     try {
-
+        await blogModel.findOneAndDelete(req.params.id);
+        return res.status(200).send({ message: 'post deleted' })
     } catch (error) {
-
+        console.log(error);
+        res.status(500).send({ message: 'error deleting blog post' });
     }
 }
