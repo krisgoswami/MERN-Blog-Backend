@@ -36,13 +36,18 @@ exports.createBlogController = async (req, res) => {
     }
 }
 
+//get all blogs
 exports.getAllBlogs = async (req, res) => {
     try {
         const blogs = await blogModel.find({});
         if (!blogs) {
-            return res.status(200).send({ message: 'no blogs found' })
+            return res.status(200).send({
+                message: 'no blogs found',
+                success: false
+            })
         }
         return res.status(200).send({
+            success: true,
             blogscount: blogs.length,
             blogs
         });
