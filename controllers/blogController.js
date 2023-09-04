@@ -104,7 +104,10 @@ exports.getUserBlog = async (req, res) => {
         if (!userBlog) {
             return res.status(404).send({ message: 'blog not found' });
         }
-        return res.status(200).send(userBlog);
+        return res.status(200).send({
+            success: true,
+            userBlog
+        });
     } catch (error) {
         console.log(error);
         res.status(404).send({ message: 'blog not found' });
