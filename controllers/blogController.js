@@ -66,7 +66,10 @@ exports.getBlogById = async (req, res) => {
         if (!blog) {
             return res.status(404).send({ message: 'post not found' });
         }
-        return res.status(200).send(blog);
+        return res.status(200).send({
+            success: true,
+            blog
+        });
     } catch (error) {
         console.log(error);
         res.status(500).send({ message: 'error fetching blog post' });
@@ -78,7 +81,11 @@ exports.updateBlogController = async (req, res) => {
         const { id } = req.params;
         const { title, description, image } = req.body;
         const updatedBlog = await blogModel.findByIdAndUpdate(id, { ...req.body }, { new: true });
-        return res.status(200).send({ message: 'sucessfully updated', updatedBlog });
+        return res.status(200).send({
+            success: true,
+            message: 'sucessfully updated',
+            updatedBlog
+        });
     } catch (error) {
         console.log(error);
         res.status(500).send({ message: "error updating blog post" });
