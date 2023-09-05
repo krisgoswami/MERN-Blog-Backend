@@ -5,9 +5,9 @@ const mongoose = require('mongoose');
 //creates blog posts
 exports.createBlogController = async (req, res) => {
     try {
-        const { title, description, image, user } = req.body;
+        const { title, description, image, user, textbody } = req.body;
         //validation to confirm all fields are filled
-        if (!title || !description || !image) {
+        if (!title || !description || !image || !textbody) {
             return res.status(400).send({
                 message: 'fill all fields'
             })
@@ -18,7 +18,7 @@ exports.createBlogController = async (req, res) => {
             return res.status(404).send({ message: 'User not found' });
         }
 
-        const newBlog = new blogModel({ title, description, image, user });
+        const newBlog = new blogModel({ title, description, image, user, textbody });
         const session = await mongoose.startSession();
         session.startTransaction();
         await newBlog.save({ session }); // saving the blog post based on session
@@ -27,12 +27,16 @@ exports.createBlogController = async (req, res) => {
         await session.commitTransaction(); // saving the session
         await newBlog.save();
         return res.status(201).send({
+            success: true,
             message: 'blog created',
             newBlog
         })
     } catch (error) {
         console.log(error);
-        res.status(500).send({ message: 'error creating blog' });
+        res.status(500).send({
+            success: false,
+            message: 'error creating blog'
+        });
     }
 }
 
@@ -80,7 +84,7 @@ exports.getBlogById = async (req, res) => {
 exports.updateBlogController = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, description, image } = req.body;
+        const { title, description, image, textbody } = req.body;
         const updatedBlog = await blogModel.findByIdAndUpdate(id, { ...req.body }, { new: true });
         return res.status(200).send({
             success: true,
