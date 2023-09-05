@@ -54,6 +54,7 @@ exports.getAllBlogs = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).send({
+            success: false,
             message: 'error fetching blogs'
         })
     }
@@ -88,19 +89,28 @@ exports.updateBlogController = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        res.status(500).send({ message: "error updating blog post" });
+        res.status(500).send({
+            success: false,
+            message: "error updating blog post"
+        });
     }
 }
 
 exports.deleteBlogController = async (req, res) => {
     try {
-        const blog = await blogModel.findOneAndDelete(req.params.id).populate('user'); // get user object to delete the post id from it
+        const blog = await blogModel.findByIdAndDelete(req.params.id).populate('user'); // get user object to delete the post id from it
         await blog.user.blogs.pull(blog); // pull the specified blog post and delete it
         await blog.user.save(); // save the user with the updated blog list
-        return res.status(200).send({ message: 'post deleted' })
+        return res.status(200).send({
+            success: true,
+            message: 'post deleted'
+        })
     } catch (error) {
         console.log(error);
-        res.status(500).send({ message: 'error deleting blog post' });
+        res.status(500).send({
+            success: false,
+            message: 'error deleting blog post'
+        });
     }
 }
 
