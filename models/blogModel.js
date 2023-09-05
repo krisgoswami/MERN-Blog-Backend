@@ -15,7 +15,7 @@ const blogSchema = new mongoose.Schema({
     },
     textbody: {
         type: String,
-        required: [true, 'Image is required']
+        required: [true, 'Body is required']
     },
     user: {
         type: mongoose.Types.ObjectId,
