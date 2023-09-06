@@ -25,7 +25,7 @@ app.use('/api/v1/blog', blogRoutes);
 
 //port
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8080;
 
 //listen
 app.listen(PORT, () => {
